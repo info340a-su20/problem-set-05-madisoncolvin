@@ -106,8 +106,7 @@ input.addEventListener("input", function() {
 //You should now be able to add new items to your task list!
 //Note that items will not add when you hit the "enter" key.
 
-//'""
-document.querySelector('#add-task').addEventListener('click', addNewTask);
+document.querySelector("#add-task").addEventListener("click", addNewTask);
 
 //Time to fix some of the user experience. Define a new function `renderInput()`
 //that does two things:
