@@ -1,9 +1,11 @@
+/* Madison Colvin */
 'use strict';
 
 //Create a variable `form` that refers to the `<form>` element in the DOM.
+let form = document.querySelector("form");
 
 /* Add an event listener to the `form` element that will listen for `'submit'` 
-type events (which occur when the form is submitted). In the callback function 
+type events (which occur when the form is submitted). In the callback function 6
 for this event listener, do the following:
   1. Call the `preventDefault()` function on the event to keep the HTTP request
      from being submitted.
@@ -19,7 +21,16 @@ for this event listener, do the following:
      attribute a value of `true` (set the attribute directly with dot notation, 
      don't use `setAttribute()`).
 */
-
+form.addEventListener('submit', function (event) {
+  event.preventDefault();
+  if(form.checkValidity()) {
+    form.classList.add("d-none");
+    document.querySelector("p").classList.remove("d-none");
+  } else {
+    form.classList.add("was-validated");
+    document.querySelector("button").disabled = "true"; 
+  }
+});
 
 
 /* You should now be able to submit the form and see it highlight fields that 
@@ -33,6 +44,8 @@ attributes, so you'll need to use JavaScript to handle that! */
 //This function takes in a Date type value and returns the number of years
 //since that date (based on the current time). For example, if run in 2020:
 //    getYearsSince("2001-01-01") // returns 19
+
+// Note to self: came with original javascript dont modify
 function getYearsSince(aDate){
   /* global moment */
   moment.suppressDeprecationWarnings = true; //don't worry about these now
@@ -60,7 +73,16 @@ The "Date of Birth" should now show an error when empty or if the year is too
 recent; otherwise it should highlight as valid. Note that you'll need to hit
 "Sign me up!" first to enable the validation highlighting!
 */
-
+let ageVerify = document.querySelector("#dobInput");
+ageVerify.addEventListener("input", function () {
+  let age = getYearsSince(ageVerify.value);
+  if (age > 200 || age < 13) {
+    ageVerify.setCustomValidity("You need to be at least 13 years old.");
+    document.querySelector("#dobFeedback").textContent = "You need to be at least 13 years old.";
+  } else {
+    ageVerify.setCustomValidity("");
+  }
+});
 
 
 /* Next you'll make sure the two "password" fields match. Start by defining a
@@ -76,15 +98,24 @@ function `validatePasswordMatch()`. This function should access both password
   Also change the `#passwordConfirmFeedback` element so its `textContent` is
   also blank (an empty string).
 */
-
-
+function validatePasswordMatch() {
+  let userInput = document.querySelector('#passwordInput');
+  let passwordCheck = document.querySelector('#passwordConfirmInput');
+  if (userInput.value === passwordCheck.value) {
+    passwordCheck.setCustomValidity("");
+    document.querySelector("#passwordConfirmFeedback").textContent = "";
+  } else {
+    passwordCheck.setCustomValidity("Passwords do not match");
+    document.querySelector("#passwordConfirmFeedback").textContent = "Passwords do not match";
+  }
+}
 
 /* Assign the `validatePasswordMatch` function as the callback for `input` 
 events that happen on BOTH the `#passwordInput` and `#passwordConfirmInput`
 elements. You can select the elements individually or using `querySelectorAll()`.
 */
-
-
+document.querySelector("#passwordInput").addEventListener("input", validatePasswordMatch);
+document.querySelector("#passwordConfirmInput").addEventListener("input", validatePasswordMatch);
 
 /* Last you'll need to only enable the "submit" button if the form is valid. Use
 the `querySelectorAll()` method to select all 4 of the <input> elements. Use the
@@ -97,6 +128,14 @@ if the <form> element has the `was-validated` class. If so, set the button's
 This should disable the button until all of the fields are valid, but only after
 the user tries to submit once (which is a polite user experience)
 */
+
+document.querySelectorAll("input").forEach(function(input) {
+  input.addEventListener("input", function validateInput() {
+      if (form.classList.contains("was-validated")) {
+        document.querySelector("button").disabled = !form.checkValidity();
+      } 
+    })
+});
 
 
 
